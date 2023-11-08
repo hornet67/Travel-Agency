@@ -1,30 +1,38 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-from .manager import CustomManager
+from .manager import Custom_manager
 
 
 # Create your models here.
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    gender_choice = [
+        ("Male", "Male"),
+        ("Female", "Female")
+    ]
 
-
-class Custome_users(AbstractBaseUser, PermissionsMixin):
     username = 'none'
-    email = models.CharField(max_length=50, unique=True)
 
-    first_name = models.CharField(_("first name"), max_length=150, blank=True)
-    last_name = models.CharField(_("last name"), max_length=150, blank=True)
+    email = models.CharField(max_length=100, unique=True)
+    user_name = models.CharField(max_length=20)
+    first_name = models.CharField(max_length=50, blank=True)
+    last_name = models.CharField(max_length=50, blank=True)
+    father_name = models.CharField(max_length=50, blank=True)
+    mother_name = models.CharField(max_length=50, blank=True)
 
-    address = models.TextField(_("address"), max_length=150, blank=True)
-    join_date = models.DateTimeField(default=timezone.now)
+    age = models.IntegerField(default=0)
+    gender = models.CharField(max_length=6, choices=gender_choice)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
 
-    objects = CustomManager()
+    phone = models.CharField(max_length=11, unique=True)
+    date_joined = models.DateTimeField(default=timezone.now)
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    objects = Custom_manager()
+
+    USERNAME_FIELD = "phone"
+    REQUIRED_FIELDS = ["email"]
 
     def __str__(self):
-        self.first_name
+        return self.phone

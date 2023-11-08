@@ -1,29 +1,28 @@
 from django.contrib.auth.models import BaseUserManager, AbstractUser
-from django.utils.translation import gettext_lazy as _
 
 
-class CustomManager(BaseUserManager):
-    # general User
-    def create_user(self, email, password, first_name, last_name, address, **other_fields):
+class Custom_manager(BaseUserManager):
+
+    #       <-----------------General_User_Model----------------->
+    def create_user(self, phone, email, password, **extra_fields):
         if not email:
-            raise ValueError(_("Pls Give an email address"))
+            raise ValueError("The given email must be set")
 
         email = self.normalize_email(email)
-        user = self.model(email=email, first_name=first_name,
-                          last_name=last_name, address=address ** other_fields)
 
+        user = self.model(phone=phone, email=email, **extra_fields)
         user.set_password(password)
         user.save()
         return user
+#       <-----------------Super_User_Model----------------->
 
-    # Super user
-    def create_superuser(self, email, password, first_name, last_name, address, **other_fields):
-        other_fields.setdefault("is_staff", True)
-        other_fields.setdefault("is_superuser", True)
-        other_fields.setdefault("is_active", True)
+    def create_superuser(self, phone, email, password, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
 
-        if other_fields.get("is_staff") is not True:
+        if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
-        if other_fields.get("is_superuser") is not True:
+        if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
-        return self.create_user(self, email, password, first_name, last_name, address, **other_fields)
+        return self.create_user(phone, email, password, **extra_fields)
